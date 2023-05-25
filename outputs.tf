@@ -16,6 +16,10 @@ output "database_password" {
   sensitive = true
 }
 
-output "ecr_repo_url" {
-  value = module.ecr.repo_url
+output "ecsInstanceRole_arn" {
+  value = module.ecsasg.ecsInstanceRole_arn
+}
+
+output "ecsServiceRole_arn" {
+  value = module.ecsasg.ecsServiceRole_arn
 }

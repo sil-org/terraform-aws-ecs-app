@@ -3,20 +3,6 @@ locals {
   app_env          = var.app_env
 }
 
-
-/*
- * Create ECR repo
- */
-module "ecr" {
-  source                = "github.com/silinternational/terraform-modules//aws/ecr?ref=8.2.1"
-  repo_name             = local.app_name_and_env
-  ecsInstanceRole_arn   = module.ecsasg.ecsInstanceRole_arn
-  ecsServiceRole_arn    = module.ecsasg.ecsServiceRole_arn
-  cd_user_arn           = var.deploy_user_arn
-  image_retention_count = 20
-  image_retention_tags  = ["latest", "develop"]
-}
-
 /*
  * Create Cloudwatch log group
  */
