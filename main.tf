@@ -127,39 +127,6 @@ module "ecs" {
 }
 
 /*
- * Create user for dynamo permissions
- */
-resource "aws_iam_user" "user_login_logger" {
-  name = "idp_hub_user_login_logger-${local.app_env}-mr"
-}
-
-/*
- * Create key for dynamo permissions
- */
-resource "aws_iam_access_key" "user_login_logger" {
-  user = aws_iam_user.user_login_logger.name
-}
-
-/*
- * Allow user_login_logger user to write to Dynamodb
- */
-resource "aws_iam_user_policy" "dynamodb-logger-policy" {
-  name = "dynamodb_user_login_logger_policy-${local.app_env}"
-  user = aws_iam_user.user_login_logger.name
-
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Action" : ["dynamodb:PutItem"],
-        "Resource" : "arn:aws:dynamodb:*:*:table/sildisco_*_user-log"
-      }
-    ]
-  })
-}
-
-/*
  * Create Cloudflare DNS record
  */
 resource "cloudflare_record" "dns" {
