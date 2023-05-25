@@ -19,11 +19,6 @@ variable "aws_region" {
   type        = string
 }
 
-variable "deploy_user_arn" {
-  description = "The ARN of a deployment service user, to be granted permissions to push and pull on the ECR repo"
-  type        = string
-}
-
 
 /*
  * Cloudwatch configuration

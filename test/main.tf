@@ -3,7 +3,6 @@ module "minimal" {
 
   app_name                 = "app"
   app_env                  = "test"
-  deploy_user_arn          = "arn"
   domain_name              = "example.com"
   container_def_json       = "{}"
   subdomain                = "app"
@@ -15,7 +14,6 @@ module "full" {
 
   app_env                  = "app"
   app_name                 = "test"
-  deploy_user_arn          = "arn"
   aws_region               = "us-west-2"
   domain_name              = "example.com"
   container_def_json       = "{}"
