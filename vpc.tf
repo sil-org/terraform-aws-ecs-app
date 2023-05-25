@@ -97,6 +97,7 @@ module "alb" {
   security_groups = [module.vpc.vpc_default_sg_id, module.cloudflare-sg.id]
   subnets         = module.vpc.public_subnet_ids
   certificate_arn = data.aws_acm_certificate.default.arn
+  tg_name         = "default-${var.app_name}-${var.app_env}"
 }
 
 /*
