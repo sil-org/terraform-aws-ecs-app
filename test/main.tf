@@ -14,7 +14,6 @@ module "full" {
 
   app_env                  = "app"
   app_name                 = "test"
-  aws_region               = "us-west-2"
   domain_name              = "example.com"
   container_def_json       = "{}"
   create_dns_record        = false

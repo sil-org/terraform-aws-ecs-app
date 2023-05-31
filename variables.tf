@@ -13,12 +13,6 @@ variable "app_name" {
   type        = string
 }
 
-variable "aws_region" {
-  description = "AWS region in which to create the optional Cloudwatch dashboard. Should match the root module provider configuration."
-  default     = "us-east-1"
-  type        = string
-}
-
 
 /*
  * Cloudwatch configuration
