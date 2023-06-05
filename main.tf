@@ -57,7 +57,7 @@ module "ecs-service-cloudwatch-dashboard" {
   count = var.create_dashboard ? 1 : 0
 
   source  = "silinternational/ecs-service-cloudwatch-dashboard/aws"
-  version = "~> 3.0.0"
+  version = "~> 3.0.1"
 
   cluster_name   = module.ecsasg.ecs_cluster_name
   dashboard_name = local.app_name_and_env
