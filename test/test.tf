@@ -16,6 +16,7 @@ module "full" {
   app_name                 = "test"
   domain_name              = "example.com"
   container_def_json       = "{}"
+  create_cd_user           = true
   create_dns_record        = false
   database_name            = "app_db"
   database_user            = "root_user"

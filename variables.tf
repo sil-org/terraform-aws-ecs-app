@@ -15,6 +15,17 @@ variable "app_name" {
 
 
 /*
+ * IAM configuration
+ */
+
+variable "create_cd_user" {
+  description = "Set to true to create an IAM user with permissions for continuous deployment"
+  default     = false
+  type        = bool
+}
+
+
+/*
  * Cloudwatch configuration
  */
 

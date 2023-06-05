@@ -23,3 +23,16 @@ output "ecsInstanceRole_arn" {
 output "ecsServiceRole_arn" {
   value = module.ecsasg.ecsServiceRole_arn
 }
+
+output "cd_user_arn" {
+  value = one(aws_iam_user.cd[*].arn)
+}
+
+output "cd_user_access_key_id" {
+  value = one(aws_iam_access_key.cd[*].id)
+}
+
+output "cd_user_secret_access_key_id" {
+  value     = one(aws_iam_access_key.cd[*].secret)
+  sensitive = true
+}
