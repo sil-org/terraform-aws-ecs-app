@@ -1,6 +1,88 @@
 locals {
   app_name_and_env = "${var.app_name}-${local.app_env}"
   app_env          = var.app_env
+
+  db_host     = module.rds.address
+  db_password = random_password.db_root.result
+
+  account = data.aws_caller_identity.this.account_id
+  region  = data.aws_region.current.name
+}
+
+/*
+ * Create user for CI/CD to perform ECS actions
+ */
+resource "aws_iam_user" "cd" {
+  count = var.create_cd_user ? 1 : 0
+
+  name = "cd-${local.app_name_and_env}"
+}
+
+resource "aws_iam_access_key" "cd" {
+  count = var.create_cd_user ? 1 : 0
+
+  user = aws_iam_user.cd[0].name
+}
+
+resource "aws_iam_user_policy" "cd" {
+  count = var.create_cd_user ? 1 : 0
+
+  name = "ecs_deployment"
+  user = aws_iam_user.cd[0].name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecs:DeregisterTaskDefinition",
+          "ecs:ListTaskDefinitions",
+          "ecs:RegisterTaskDefinition",
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:DescribeServices",
+          "ecs:DescribeTaskDefinition",
+          "ecs:UpdateService",
+        ]
+        Resource = "arn:aws:ecs:${local.region}:${local.account}:service/${module.ecsasg.ecs_cluster_name}/${module.ecs.service_name}"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:DescribeTasks",
+          "ecs:StopTask",
+        ]
+        Resource = "arn:aws:ecs:${local.region}:${local.account}:task/${module.ecsasg.ecs_cluster_name}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:ListTasks",
+        ]
+        Resource = "arn:aws:ecs:${local.region}:${local.account}:container-instance/${module.ecsasg.ecs_cluster_name}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:StartTask",
+        ]
+        Resource = "arn:aws:ecs:${local.region}:${local.account}:task-definition/${module.ecs.task_def_family}:*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:PassRole",
+        ]
+        Resource = module.ecsasg.ecsServiceRole_arn
+      },
+    ]
+  })
 }
 
 /*
@@ -90,11 +172,6 @@ module "rds" {
   multi_az          = true
 }
 
-locals {
-  db_host     = module.rds.address
-  db_password = random_password.db_root.result
-}
-
 /*
  * Create new ecs service
  */
@@ -131,3 +208,12 @@ data "cloudflare_zones" "domain" {
     status      = "active"
   }
 }
+
+
+/*
+ * AWS data
+ */
+
+data "aws_caller_identity" "this" {}
+
+data "aws_region" "current" {}
