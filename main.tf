@@ -1,6 +1,12 @@
 locals {
   app_name_and_env = "${var.app_name}-${local.app_env}"
   app_env          = var.app_env
+
+  db_host     = module.rds.address
+  db_password = random_password.db_root.result
+
+  account = data.aws_caller_identity.this.account_id
+  region  = data.aws_region.current.name
 }
 
 /*
@@ -166,11 +172,6 @@ module "rds" {
   multi_az          = true
 }
 
-locals {
-  db_host     = module.rds.address
-  db_password = random_password.db_root.result
-}
-
 /*
  * Create new ecs service
  */
@@ -216,9 +217,3 @@ data "cloudflare_zones" "domain" {
 data "aws_caller_identity" "this" {}
 
 data "aws_region" "current" {}
-
-locals {
-  account = data.aws_caller_identity.this.account_id
-  region  = data.aws_region.current.name
-}
-
