@@ -65,7 +65,13 @@ resource "aws_iam_user_policy" "cd" {
         Action = [
           "ecs:ListTasks",
         ]
-        Resource = "arn:aws:ecs:${local.region}:${local.account}:container-instance/${module.ecsasg.ecs_cluster_name}/*"
+        "Effect" : "Allow",
+        "Condition" : {
+          "ArnEquals" : {
+            "ecs:cluster" : "arn:aws:ecs:${local.region}:${local.account}:cluster/${module.ecsasg.ecs_cluster_name}"
+          }
+        }
+        Resources = "*"
       },
       {
         Effect = "Allow"
