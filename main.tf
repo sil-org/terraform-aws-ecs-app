@@ -71,7 +71,7 @@ resource "aws_iam_user_policy" "cd" {
             "ecs:cluster" : "arn:aws:ecs:${local.region}:${local.account}:cluster/${module.ecsasg.ecs_cluster_name}"
           }
         }
-        Resources = "*"
+        Resource = "*"
       },
       {
         Effect = "Allow"
