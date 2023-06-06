@@ -38,6 +38,7 @@ resource "aws_iam_user_policy" "cd" {
         Action = [
           "ecr:GetAuthorizationToken",
           "ecs:DeregisterTaskDefinition",
+          "ecs:DescribeTaskDefinition",
           "ecs:ListTaskDefinitions",
           "ecs:RegisterTaskDefinition",
         ],
@@ -47,7 +48,6 @@ resource "aws_iam_user_policy" "cd" {
         Effect = "Allow"
         Action = [
           "ecs:DescribeServices",
-          "ecs:DescribeTaskDefinition",
           "ecs:UpdateService",
         ]
         Resource = "arn:aws:ecs:${local.region}:${local.account}:service/${module.ecsasg.ecs_cluster_name}/${module.ecs.service_name}"
