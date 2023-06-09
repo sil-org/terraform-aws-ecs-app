@@ -29,6 +29,7 @@ module "full" {
   ssh_key_name             = "ssh"
   aws_zones                = ["us-west-2a"]
   default_cert_domain_name = "*.example.com"
+  instance_type            = "t3.micro"
 }
 
 provider "aws" {

@@ -116,4 +116,5 @@ module "ecsasg" {
   alarm_actions_enabled = var.alarm_actions_enabled
   ssh_key_name          = var.ssh_key_name
   use_amazon_linux2     = true
+  instance_type         = var.instance_type
 }
