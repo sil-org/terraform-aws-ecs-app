@@ -11,3 +11,4 @@ Includes:
 * RDS (Relational Database Service) Instance
 * CloudWatch Dashboard (optional)
 * Cloudflare DNS Record (optional)
+* Adminer database manager (optional)

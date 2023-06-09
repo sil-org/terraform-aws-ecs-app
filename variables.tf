@@ -144,3 +144,15 @@ variable "database_user" {
   default     = "root"
   type        = string
 }
+
+variable "create_adminer" {
+  description = "Set to true to create an Adminer database manager app instance"
+  default     = false
+  type        = bool
+}
+
+variable "enable_adminer" {
+  description = "Set to true to create a DNS record and start the Adminer app. Requires create_adminer = true."
+  default     = false
+  type        = bool
+}
