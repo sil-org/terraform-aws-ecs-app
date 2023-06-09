@@ -17,7 +17,7 @@ output "database_password" {
 }
 
 output "adminer_url" {
-  value = module.adminer.adminer_url
+  value = one(module.adminer[*].adminer_url)
 }
 
 output "ecsInstanceRole_arn" {
