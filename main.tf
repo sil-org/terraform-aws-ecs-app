@@ -179,6 +179,27 @@ module "rds" {
 }
 
 /*
+ * Optional Adminer database manager
+ */
+module "adminer" {
+  count   = var.create_adminer ? 1 : 0
+  source  = "silinternational/adminer/aws"
+  version = "1.0.2"
+
+  adminer_default_server = module.rds.address
+  app_name               = var.app_name
+  app_env                = var.app_env
+  vpc_id                 = module.vpc.id
+  alb_https_listener_arn = module.alb.https_listener_arn
+  subdomain              = "adminer"
+  cloudflare_domain      = var.domain_name
+  ecs_cluster_id         = module.ecsasg.ecs_cluster_id
+  ecsServiceRole_arn     = module.ecsasg.ecsServiceRole_arn
+  alb_dns_name           = module.alb.dns_name
+  enable                 = var.enable_adminer
+}
+
+/*
  * Create new ecs service
  */
 module "ecs" {

@@ -30,6 +30,8 @@ module "full" {
   aws_zones                = ["us-west-2a"]
   default_cert_domain_name = "*.example.com"
   instance_type            = "t3.micro"
+  create_adminer           = true
+  enable_adminer           = true
 }
 
 provider "aws" {

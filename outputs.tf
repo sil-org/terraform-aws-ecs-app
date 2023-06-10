@@ -16,6 +16,10 @@ output "database_password" {
   sensitive = true
 }
 
+output "adminer_url" {
+  value = one(module.adminer[*].adminer_url)
+}
+
 output "ecsInstanceRole_arn" {
   value = module.ecsasg.ecsInstanceRole_arn
 }
