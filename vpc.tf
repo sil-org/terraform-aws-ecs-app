@@ -33,7 +33,7 @@ resource "aws_cloudwatch_log_group" "vpc_flow_log" {
 }
 
 resource "aws_iam_role" "vpc_flow_log" {
-  name = "VPCFlowLog-${local.app_name_and_env}"
+  name = "VPCFlowLog-${local.app_name_and_env}-${local.region}"
 
   assume_role_policy = <<EOF
 {
