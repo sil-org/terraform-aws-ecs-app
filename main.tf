@@ -156,7 +156,8 @@ module "ecs-service-cloudwatch-dashboard" {
  * Create RDS root password
  */
 resource "random_password" "db_root" {
-  length = 16
+  length           = 16
+  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
 /*
@@ -169,7 +170,7 @@ module "rds" {
   app_env           = local.app_env
   db_name           = var.database_name
   db_root_user      = var.database_user
-  db_root_pass      = random_password.db_root.result
+  db_root_pass      = local.db_password
   subnet_group_name = module.vpc.db_subnet_group_name
   security_groups   = [module.vpc.vpc_default_sg_id]
 
