@@ -12,7 +12,7 @@ output "database_host" {
 }
 
 output "database_password" {
-  value     = random_password.db_root.result
+  value     = local.db_password
   sensitive = true
 }
 
