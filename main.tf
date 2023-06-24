@@ -156,7 +156,9 @@ module "ecs-service-cloudwatch-dashboard" {
  * Create RDS root password
  */
 resource "random_password" "db_root" {
-  length           = 16
+  length = 16
+
+  # this list is the same as the default list with only '@' removed
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
