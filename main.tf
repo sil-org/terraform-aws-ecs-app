@@ -224,11 +224,12 @@ module "ecs" {
 resource "cloudflare_record" "dns" {
   count = var.create_dns_record ? 1 : 0
 
-  zone_id = data.cloudflare_zone.this.id
-  name    = var.subdomain
-  value   = module.alb.dns_name
-  type    = "CNAME"
-  proxied = true
+  zone_id         = data.cloudflare_zone.this.id
+  name            = var.subdomain
+  value           = module.alb.dns_name
+  type            = "CNAME"
+  proxied         = true
+  allow_overwrite = var.dns_allow_overwrite
 }
 
 data "cloudflare_zone" "this" {
