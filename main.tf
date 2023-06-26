@@ -224,19 +224,15 @@ module "ecs" {
 resource "cloudflare_record" "dns" {
   count = var.create_dns_record ? 1 : 0
 
-  zone_id = data.cloudflare_zones.domain.zones[0].id
+  zone_id = data.cloudflare_zone.this.id
   name    = var.subdomain
   value   = module.alb.dns_name
   type    = "CNAME"
   proxied = true
 }
 
-data "cloudflare_zones" "domain" {
-  filter {
-    name        = var.domain_name
-    lookup_type = "exact"
-    status      = "active"
-  }
+data "cloudflare_zone" "this" {
+  name = var.domain_name
 }
 
 
