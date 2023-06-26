@@ -46,6 +46,12 @@ variable "create_dns_record" {
   type        = bool
 }
 
+variable "dns_allow_overwrite" {
+  description = "Controls whether this module can overwrite an existing DNS record with the same name. Can be used in a multiregion DNS-based failover configuration."
+  type        = bool
+  default     = false
+}
+
 variable "domain_name" {
   description = "The domain name on which to host the app. Combined with \"subdomain\" to create an ALB listener rule. Also used for the optional DNS record."
   type        = string
