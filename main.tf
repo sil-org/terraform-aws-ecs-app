@@ -148,7 +148,7 @@ module "ecs-service-cloudwatch-dashboard" {
   version = "~> 3.0.1"
 
   cluster_name   = module.ecsasg.ecs_cluster_name
-  dashboard_name = local.app_name_and_env
+  dashboard_name = "${local.app_name_and_env}-${local.region}"
   service_names  = [var.app_name]
 }
 
