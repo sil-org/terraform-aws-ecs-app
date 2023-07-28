@@ -1,4 +1,8 @@
 
+output "alb_dns_name" {
+  value = module.alb.dns_name
+}
+
 output "app_url" {
   value = "https://${var.subdomain}.${var.domain_name}"
 }
