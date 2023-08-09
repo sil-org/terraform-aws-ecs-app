@@ -50,7 +50,7 @@ resource "aws_iam_user_policy" "cd" {
           "ecs:DescribeServices",
           "ecs:UpdateService",
         ]
-        Resource = "arn:aws:ecs:${local.region}:${local.account}:service/${module.ecsasg.ecs_cluster_name}/${module.ecs.service_name}"
+        Resource = "arn:aws:ecs:*:${local.account}:service/${module.ecsasg.ecs_cluster_name}/${module.ecs.service_name}"
       },
       {
         Effect = "Allow"
@@ -58,7 +58,7 @@ resource "aws_iam_user_policy" "cd" {
           "ecs:DescribeTasks",
           "ecs:StopTask",
         ]
-        Resource = "arn:aws:ecs:${local.region}:${local.account}:task/${module.ecsasg.ecs_cluster_name}/*"
+        Resource = "arn:aws:ecs:*:${local.account}:task/${module.ecsasg.ecs_cluster_name}/*"
       },
       {
         Effect = "Allow"
@@ -68,7 +68,7 @@ resource "aws_iam_user_policy" "cd" {
         "Effect" : "Allow",
         "Condition" : {
           "ArnEquals" : {
-            "ecs:cluster" : "arn:aws:ecs:${local.region}:${local.account}:cluster/${module.ecsasg.ecs_cluster_name}"
+            "ecs:cluster" : "arn:aws:ecs:*:${local.account}:cluster/${module.ecsasg.ecs_cluster_name}"
           }
         }
         Resource = "*"
@@ -78,7 +78,7 @@ resource "aws_iam_user_policy" "cd" {
         Action = [
           "ecs:StartTask",
         ]
-        Resource = "arn:aws:ecs:${local.region}:${local.account}:task-definition/${module.ecs.task_def_family}:*"
+        Resource = "arn:aws:ecs:*:${local.account}:task-definition/${module.ecs.task_def_family}:*"
       },
       {
         Effect = "Allow"
@@ -148,7 +148,7 @@ module "ecs-service-cloudwatch-dashboard" {
   version = "~> 3.0.1"
 
   cluster_name   = module.ecsasg.ecs_cluster_name
-  dashboard_name = local.app_name_and_env
+  dashboard_name = "${local.app_name_and_env}-${local.region}"
   service_names  = [var.app_name]
 }
 
