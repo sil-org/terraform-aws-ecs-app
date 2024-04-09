@@ -139,6 +139,12 @@ variable "default_cert_domain_name" {
  * Database configuration
  */
 
+variable "rds_ca_cert_identifier" {
+  description = "The identifier of the CA certificate for the DB instance."
+  default     = null
+  type        = string
+}
+
 variable "database_name" {
   description = "The name assigned to the created database"
   default     = "db"
