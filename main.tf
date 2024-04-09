@@ -166,15 +166,16 @@ resource "random_password" "db_root" {
  * Create an RDS database
  */
 module "rds" {
-  source = "github.com/silinternational/terraform-modules//aws/rds/mariadb?ref=8.2.1"
+  source = "github.com/silinternational/terraform-modules//aws/rds/mariadb?ref=8.8.0"
 
-  app_name          = var.app_name
-  app_env           = local.app_env
-  db_name           = var.database_name
-  db_root_user      = var.database_user
-  db_root_pass      = local.db_password
-  subnet_group_name = module.vpc.db_subnet_group_name
-  security_groups   = [module.vpc.vpc_default_sg_id]
+  app_name           = var.app_name
+  app_env            = local.app_env
+  ca_cert_identifier = var.rds_ca_cert_identifier
+  db_name            = var.database_name
+  db_root_user       = var.database_user
+  db_root_pass       = local.db_password
+  subnet_group_name  = module.vpc.db_subnet_group_name
+  security_groups    = [module.vpc.vpc_default_sg_id]
 
   allocated_storage = 20 // 20 gibibyte
   instance_class    = "db.t3.micro"
@@ -206,7 +207,7 @@ module "adminer" {
  * Create new ecs service
  */
 module "ecs" {
-  source             = "github.com/silinternational/terraform-modules//aws/ecs/service-only?ref=8.2.1"
+  source             = "github.com/silinternational/terraform-modules//aws/ecs/service-only?ref=8.8.0"
   cluster_id         = module.ecsasg.ecs_cluster_id
   service_name       = var.app_name
   service_env        = local.app_env
