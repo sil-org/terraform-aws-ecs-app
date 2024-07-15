@@ -113,9 +113,19 @@ resource "aws_alb_target_group" "tg" {
     type = "lb_cookie"
   }
 
-  health_check {
-    path    = "/"
-    matcher = "302"
+  dynamic "health_check" {
+    for_each = [var.health_check]
+    content {
+      enabled             = try(health_check.value.enabled, null)
+      healthy_threshold   = try(health_check.value.healthy_threshold, null)
+      interval            = try(health_check.value.interval, null)
+      matcher             = try(health_check.value.matcher, null)
+      path                = try(health_check.value.path, null)
+      port                = try(health_check.value.port, null)
+      protocol            = try(health_check.value.protocol, null)
+      timeout             = try(health_check.value.timeout, null)
+      unhealthy_threshold = try(health_check.value.unhealthy_threshold, null)
+    }
   }
 }
 

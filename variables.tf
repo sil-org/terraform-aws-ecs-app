@@ -134,6 +134,14 @@ variable "default_cert_domain_name" {
   type        = string
 }
 
+variable "health_check" {
+  description = "Elastic Load Balancer health check configuration"
+  type        = map(string)
+  default = {
+    path    = "/"
+    matcher = "200-399"
+  }
+}
 
 /*
  * Database configuration
