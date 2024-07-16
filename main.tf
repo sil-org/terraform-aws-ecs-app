@@ -113,9 +113,19 @@ resource "aws_alb_target_group" "tg" {
     type = "lb_cookie"
   }
 
-  health_check {
-    path    = "/"
-    matcher = "302"
+  dynamic "health_check" {
+    for_each = [var.health_check]
+    content {
+      enabled             = try(health_check.value.enabled, null)
+      healthy_threshold   = try(health_check.value.healthy_threshold, null)
+      interval            = try(health_check.value.interval, null)
+      matcher             = try(health_check.value.matcher, null)
+      path                = try(health_check.value.path, null)
+      port                = try(health_check.value.port, null)
+      protocol            = try(health_check.value.protocol, null)
+      timeout             = try(health_check.value.timeout, null)
+      unhealthy_threshold = try(health_check.value.unhealthy_threshold, null)
+    }
   }
 }
 
@@ -195,7 +205,7 @@ module "adminer" {
   app_env                = var.app_env
   vpc_id                 = module.vpc.id
   alb_https_listener_arn = module.alb.https_listener_arn
-  subdomain              = "adminer"
+  subdomain              = "adminer-${local.app_name_and_env}"
   cloudflare_domain      = var.domain_name
   ecs_cluster_id         = module.ecsasg.ecs_cluster_id
   ecsServiceRole_arn     = module.ecsasg.ecsServiceRole_arn

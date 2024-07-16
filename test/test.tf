@@ -32,6 +32,17 @@ module "full" {
   instance_type            = "t3.micro"
   create_adminer           = true
   enable_adminer           = true
+  health_check = {
+    enabled             = true
+    healthy_threshold   = 3
+    interval            = 30
+    matcher             = "200-399"
+    path                = "/"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 10
+    unhealthy_threshold = 3
+  }
 }
 
 provider "aws" {
