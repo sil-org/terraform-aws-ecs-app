@@ -43,6 +43,9 @@ module "full" {
     timeout             = 10
     unhealthy_threshold = 3
   }
+  asg_tags = {
+    foo = "bar",
+  }
 }
 
 provider "aws" {
