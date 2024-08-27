@@ -35,6 +35,12 @@ variable "create_dashboard" {
   type        = bool
 }
 
+variable "log_retention_in_days" {
+  description = "Number of days to retain CloudWatch application logs"
+  default     = 30
+  type        = number
+}
+
 
 /*
  * DNS configuration

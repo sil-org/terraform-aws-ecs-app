@@ -43,6 +43,7 @@ module "full" {
     timeout             = 10
     unhealthy_threshold = 3
   }
+  log_retention_in_days = 60
 }
 
 provider "aws" {
