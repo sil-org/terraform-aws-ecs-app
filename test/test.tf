@@ -44,6 +44,9 @@ module "full" {
     unhealthy_threshold = 3
   }
   log_retention_in_days = 60
+  asg_tags = {
+    foo = "bar",
+  }
 }
 
 provider "aws" {
