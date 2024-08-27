@@ -101,6 +101,12 @@ variable "asg_max_size" {
   type        = number
 }
 
+variable "asg_tags" {
+  description = "Tags to assign to the Autoscaling Group and EC2 instances"
+  default     = {}
+  type        = map(string)
+}
+
 variable "instance_type" {
   description = "See: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#AvailableInstanceTypes"
   default     = "t2.micro"
