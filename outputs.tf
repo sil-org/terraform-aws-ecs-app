@@ -11,6 +11,10 @@ output "cloudwatch_log_group_name" {
   value = aws_cloudwatch_log_group.logs.name
 }
 
+output "database_arn" {
+  value = module.rds.arn
+}
+
 output "database_host" {
   value = module.rds.address
 }
