@@ -3,18 +3,19 @@
  * Create VPC
  */
 module "vpc" {
-  source    = "github.com/silinternational/terraform-modules//aws/vpc?ref=8.8.0"
+  source  = "silinternational/vpc/aws"
+  version = "~> 1.0"
+
   app_name  = var.app_name
   app_env   = var.app_env
   aws_zones = var.aws_zones
-
 }
 
 /*
  * Security group to limit traffic to Cloudflare IPs
  */
 module "cloudflare-sg" {
-  source = "github.com/silinternational/terraform-modules//aws/cloudflare-sg?ref=8.8.0"
+  source = "github.com/silinternational/terraform-modules//aws/cloudflare-sg?ref=8.13.3"
   vpc_id = module.vpc.id
 }
 
@@ -90,7 +91,7 @@ data "aws_acm_certificate" "default" {
  * Create application load balancer for public access
  */
 module "alb" {
-  source          = "github.com/silinternational/terraform-modules//aws/alb?ref=8.8.0"
+  source          = "github.com/silinternational/terraform-modules//aws/alb?ref=8.13.3"
   app_name        = var.app_name
   app_env         = var.app_env
   internal        = "false"
@@ -106,8 +107,9 @@ module "alb" {
  * https://registry.terraform.io/modules/silinternational/ecs-asg/aws
  */
 module "ecsasg" {
-  source                = "silinternational/ecs-asg/aws"
-  version               = "3.1.0"
+  source  = "silinternational/ecs-asg/aws"
+  version = "~> 3.3"
+
   cluster_name          = local.app_name_and_env
   subnet_ids            = module.vpc.private_subnet_ids
   security_group_ids    = [module.vpc.vpc_default_sg_id]

@@ -33,5 +33,8 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# Since this is a module, we don't want to retain version locks
+.terraform.lock.hcl
+
 # IDE configuration
 .idea/

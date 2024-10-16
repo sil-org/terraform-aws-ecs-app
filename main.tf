@@ -155,7 +155,7 @@ module "ecs-service-cloudwatch-dashboard" {
   count = var.create_dashboard ? 1 : 0
 
   source  = "silinternational/ecs-service-cloudwatch-dashboard/aws"
-  version = "~> 3.0.1"
+  version = "~> 3.1"
 
   cluster_name   = module.ecsasg.ecs_cluster_name
   dashboard_name = "${local.app_name_and_env}-${local.region}"
@@ -176,7 +176,7 @@ resource "random_password" "db_root" {
  * Create an RDS database
  */
 module "rds" {
-  source = "github.com/silinternational/terraform-modules//aws/rds/mariadb?ref=8.8.0"
+  source = "github.com/silinternational/terraform-modules//aws/rds/mariadb?ref=8.13.3"
 
   app_name           = var.app_name
   app_env            = local.app_env
@@ -198,7 +198,7 @@ module "rds" {
 module "adminer" {
   count   = var.create_adminer ? 1 : 0
   source  = "silinternational/adminer/aws"
-  version = "1.0.2"
+  version = "~> 1.1"
 
   adminer_default_server = module.rds.address
   app_name               = var.app_name
@@ -217,7 +217,7 @@ module "adminer" {
  * Create new ecs service
  */
 module "ecs" {
-  source             = "github.com/silinternational/terraform-modules//aws/ecs/service-only?ref=8.8.0"
+  source             = "github.com/silinternational/terraform-modules//aws/ecs/service-only?ref=8.13.3"
   cluster_id         = module.ecsasg.ecs_cluster_id
   service_name       = var.app_name
   service_env        = local.app_env
