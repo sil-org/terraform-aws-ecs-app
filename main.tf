@@ -2,7 +2,6 @@ locals {
   app_name_and_env = "${var.app_name}-${local.app_env}"
   app_env          = var.app_env
 
-  db_host     = module.rds.address
   db_password = random_password.db_root.result
 
   account = data.aws_caller_identity.this.account_id
@@ -65,7 +64,6 @@ resource "aws_iam_user_policy" "cd" {
         Action = [
           "ecs:ListTasks",
         ]
-        "Effect" : "Allow",
         "Condition" : {
           "ArnEquals" : {
             "ecs:cluster" : "arn:aws:ecs:*:${local.account}:cluster/${module.ecsasg.ecs_cluster_name}"
