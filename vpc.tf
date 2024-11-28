@@ -126,4 +126,5 @@ module "ecsasg" {
   use_amazon_linux2     = true
   instance_type         = var.instance_type
   tags                  = var.asg_tags
+  enable_ipv6           = var.enable_ipv6
 }
