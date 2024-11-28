@@ -146,6 +146,18 @@ variable "default_cert_domain_name" {
   type        = string
 }
 
+variable "disable_public_ipv4" {
+  description = "Set to true to remove the public IPv4 addresses from the ALB. Requires enable_ipv6 = true"
+  type        = bool
+  default     = false
+}
+
+variable "enable_ipv6" {
+  description = "Set to true to enable IPV6 in the ALB and VPC"
+  type        = bool
+  default     = false
+}
+
 variable "health_check" {
   description = "Elastic Load Balancer health check configuration"
   type        = map(string)
