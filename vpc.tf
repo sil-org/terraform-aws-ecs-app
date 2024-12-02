@@ -6,9 +6,10 @@ module "vpc" {
   source  = "silinternational/vpc/aws"
   version = "~> 1.0"
 
-  app_name  = var.app_name
-  app_env   = var.app_env
-  aws_zones = var.aws_zones
+  app_name    = var.app_name
+  app_env     = var.app_env
+  aws_zones   = var.aws_zones
+  enable_ipv6 = var.enable_ipv6
 }
 
 /*
@@ -91,15 +92,19 @@ data "aws_acm_certificate" "default" {
  * Create application load balancer for public access
  */
 module "alb" {
-  source          = "github.com/silinternational/terraform-modules//aws/alb?ref=8.13.3"
-  app_name        = var.app_name
-  app_env         = var.app_env
-  internal        = "false"
-  vpc_id          = module.vpc.id
-  security_groups = [module.vpc.vpc_default_sg_id, module.cloudflare-sg.id]
-  subnets         = module.vpc.public_subnet_ids
-  certificate_arn = data.aws_acm_certificate.default.arn
-  tg_name         = "default-${var.app_name}-${var.app_env}"
+  source  = "silinternational/alb/aws"
+  version = "~> 1.1"
+
+  app_name            = var.app_name
+  app_env             = var.app_env
+  enable_ipv6         = var.enable_ipv6
+  disable_public_ipv4 = var.disable_public_ipv4
+  internal            = "false"
+  vpc_id              = module.vpc.id
+  security_groups     = [module.vpc.vpc_default_sg_id, module.cloudflare-sg.id]
+  subnets             = module.vpc.public_subnet_ids
+  certificate_arn     = data.aws_acm_certificate.default.arn
+  tg_name             = "default-${var.app_name}-${var.app_env}"
 }
 
 /*
@@ -121,4 +126,5 @@ module "ecsasg" {
   use_amazon_linux2     = true
   instance_type         = var.instance_type
   tags                  = var.asg_tags
+  enable_ipv6           = var.enable_ipv6
 }
