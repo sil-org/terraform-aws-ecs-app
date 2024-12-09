@@ -204,5 +204,5 @@ variable "enable_adminer" {
 variable "enable_ec2_detailed_monitoring" {
   description = "Enables/disables detailed monitoring for EC2 instances"
   type        = bool
-  default     = true
+  default     = false
 }
