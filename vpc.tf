@@ -115,16 +115,17 @@ module "ecsasg" {
   source  = "silinternational/ecs-asg/aws"
   version = "~> 3.3"
 
-  cluster_name          = local.app_name_and_env
-  subnet_ids            = module.vpc.private_subnet_ids
-  security_group_ids    = [module.vpc.vpc_default_sg_id]
-  min_size              = var.asg_min_size
-  max_size              = var.asg_max_size
-  scaling_metric_name   = "MemoryReservation"
-  alarm_actions_enabled = var.alarm_actions_enabled
-  ssh_key_name          = var.ssh_key_name
-  use_amazon_linux2     = true
-  instance_type         = var.instance_type
-  tags                  = var.asg_tags
-  enable_ipv6           = var.enable_ipv6
+  cluster_name                   = local.app_name_and_env
+  subnet_ids                     = module.vpc.private_subnet_ids
+  security_group_ids             = [module.vpc.vpc_default_sg_id]
+  min_size                       = var.asg_min_size
+  max_size                       = var.asg_max_size
+  scaling_metric_name            = "MemoryReservation"
+  alarm_actions_enabled          = var.alarm_actions_enabled
+  ssh_key_name                   = var.ssh_key_name
+  use_amazon_linux2              = true
+  instance_type                  = var.instance_type
+  tags                           = var.asg_tags
+  enable_ipv6                    = var.enable_ipv6
+  enable_ec2_detailed_monitoring = var.enable_ec2_detailed_monitoring
 }
