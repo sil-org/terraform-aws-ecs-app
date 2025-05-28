@@ -113,7 +113,7 @@ module "alb" {
  */
 module "ecsasg" {
   source  = "silinternational/ecs-asg/aws"
-  version = "~> 3.3"
+  version = "~> 4.0"
 
   cluster_name                   = local.app_name_and_env
   subnet_ids                     = module.vpc.private_subnet_ids
@@ -123,7 +123,7 @@ module "ecsasg" {
   scaling_metric_name            = "MemoryReservation"
   alarm_actions_enabled          = var.alarm_actions_enabled
   ssh_key_name                   = var.ssh_key_name
-  use_amazon_linux2              = true
+  use_amazon_linux2023           = true
   instance_type                  = var.instance_type
   tags                           = var.asg_tags
   enable_ipv6                    = var.enable_ipv6
