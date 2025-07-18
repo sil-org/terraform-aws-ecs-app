@@ -12,11 +12,11 @@ output "cloudwatch_log_group_name" {
 }
 
 output "database_arn" {
-  value = module.rds.arn
+  value = aws_db_instance.this.arn
 }
 
 output "database_host" {
-  value = module.rds.address
+  value = aws_db_instance.this.address
 }
 
 output "database_password" {
