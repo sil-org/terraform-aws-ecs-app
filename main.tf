@@ -173,21 +173,40 @@ resource "random_password" "db_root" {
 /*
  * Create an RDS database
  */
-module "rds" {
-  source = "github.com/silinternational/terraform-modules//aws/rds/mariadb?ref=8.13.3"
+resource "aws_db_instance" "this" {
+  apply_immediately           = false
+  auto_minor_version_upgrade  = false
+  allow_major_version_upgrade = false
+  engine                      = "mariadb"
+  engine_version              = "10.6.20"
+  allocated_storage           = "20" // 20 gibibyte
+  copy_tags_to_snapshot       = true
+  ca_cert_identifier          = var.rds_ca_cert_identifier
+  instance_class              = "db.t3.micro"
+  db_name                     = var.database_name
+  identifier                  = "${var.app_name}-${var.app_env}"
+  username                    = var.database_user
+  password                    = local.db_password
+  db_subnet_group_name        = module.vpc.db_subnet_group_name
+  storage_type                = "gp2"
+  storage_encrypted           = false
+  backup_retention_period     = "14"
+  multi_az                    = true
+  publicly_accessible         = false
+  vpc_security_group_ids      = [module.vpc.vpc_default_sg_id]
+  skip_final_snapshot         = true
+  deletion_protection         = false
 
-  app_name           = var.app_name
-  app_env            = local.app_env
-  ca_cert_identifier = var.rds_ca_cert_identifier
-  db_name            = var.database_name
-  db_root_user       = var.database_user
-  db_root_pass       = local.db_password
-  subnet_group_name  = module.vpc.db_subnet_group_name
-  security_groups    = [module.vpc.vpc_default_sg_id]
+  tags = {
+    Name     = "${var.app_name}-${var.app_env}"
+    app_name = var.app_name
+    app_env  = var.app_env
+  }
+}
 
-  allocated_storage = 20 // 20 gibibyte
-  instance_class    = "db.t3.micro"
-  multi_az          = true
+moved {
+  from = module.rds.aws_db_instance.db_instance
+  to   = aws_db_instance.this
 }
 
 /*
@@ -198,7 +217,7 @@ module "adminer" {
   source  = "silinternational/adminer/aws"
   version = "~> 1.1"
 
-  adminer_default_server = module.rds.address
+  adminer_default_server = aws_db_instance.this.address
   app_name               = var.app_name
   app_env                = var.app_env
   vpc_id                 = module.vpc.id
