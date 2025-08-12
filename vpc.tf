@@ -113,7 +113,7 @@ module "alb" {
  */
 module "ecsasg" {
   source  = "silinternational/ecs-asg/aws"
-  version = "~> 4.0"
+  version = "~> 4.1"
 
   cluster_name                   = local.app_name_and_env
   subnet_ids                     = module.vpc.private_subnet_ids
@@ -128,4 +128,5 @@ module "ecsasg" {
   tags                           = var.asg_tags
   enable_ipv6                    = var.enable_ipv6
   enable_ec2_detailed_monitoring = var.enable_ec2_detailed_monitoring
+  additional_user_data           = var.asg_additional_user_data
 }

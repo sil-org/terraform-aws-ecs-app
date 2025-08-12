@@ -106,6 +106,12 @@ variable "alarm_actions_enabled" {
   type        = bool
 }
 
+variable "asg_additional_user_data" {
+  description = "Bash code to append to the default EC2 user_data."
+  type        = string
+  default     = ""
+}
+
 variable "asg_min_size" {
   description = "The minimum size of the Autoscaling Group"
   default     = 1
