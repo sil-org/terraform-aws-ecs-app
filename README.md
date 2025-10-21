@@ -44,8 +44,8 @@ health_check = {
 
 ## Example
 
-A working [example](https://github.com/silinternational/terraform-aws-ecs-app/tree/main/test) usage of this module is included in the source repository.
+A working [example](https://github.com/sil-org/terraform-aws-ecs-app/tree/main/test) usage of this module is included in the source repository.
 
 ## More info
 
-More information is available at the [Terraform Registry](https://registry.terraform.io/modules/silinternational/ecs-app/aws/latest)
+More information is available at the [Terraform Registry](https://registry.terraform.io/modules/sil-org/ecs-app/aws/latest)

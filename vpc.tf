@@ -3,7 +3,7 @@
  * Create VPC
  */
 module "vpc" {
-  source  = "silinternational/vpc/aws"
+  source  = "sil-org/vpc/aws"
   version = "~> 1.0"
 
   app_name    = var.app_name
@@ -16,7 +16,7 @@ module "vpc" {
  * Security group to limit traffic to Cloudflare IPs
  */
 module "cloudflare-sg" {
-  source = "github.com/silinternational/terraform-modules//aws/cloudflare-sg?ref=8.13.3"
+  source = "github.com/sil-org/terraform-modules//aws/cloudflare-sg?ref=8.13.3"
   vpc_id = module.vpc.id
 }
 
@@ -92,7 +92,7 @@ data "aws_acm_certificate" "default" {
  * Create application load balancer for public access
  */
 module "alb" {
-  source  = "silinternational/alb/aws"
+  source  = "sil-org/alb/aws"
   version = "~> 1.1"
 
   app_name            = var.app_name
@@ -109,10 +109,10 @@ module "alb" {
 
 /*
  * Create ECS Cluster and Auto-Scaling Group
- * https://registry.terraform.io/modules/silinternational/ecs-asg/aws
+ * https://registry.terraform.io/modules/sil-org/ecs-asg/aws
  */
 module "ecsasg" {
-  source  = "silinternational/ecs-asg/aws"
+  source  = "sil-org/ecs-asg/aws"
   version = "~> 4.1"
 
   cluster_name                   = local.app_name_and_env
