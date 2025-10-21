@@ -152,7 +152,7 @@ resource "aws_alb_listener_rule" "tg" {
 module "ecs-service-cloudwatch-dashboard" {
   count = var.create_dashboard ? 1 : 0
 
-  source  = "silinternational/ecs-service-cloudwatch-dashboard/aws"
+  source  = "sil-org/ecs-service-cloudwatch-dashboard/aws"
   version = "~> 3.1"
 
   cluster_name   = module.ecsasg.ecs_cluster_name
@@ -210,7 +210,7 @@ resource "aws_db_instance" "this" {
  */
 module "adminer" {
   count   = var.create_adminer ? 1 : 0
-  source  = "silinternational/adminer/aws"
+  source  = "sil-org/adminer/aws"
   version = "~> 1.1"
 
   adminer_default_server = aws_db_instance.this.address
@@ -230,7 +230,7 @@ module "adminer" {
  * Create new ecs service
  */
 module "ecs" {
-  source             = "github.com/silinternational/terraform-modules//aws/ecs/service-only?ref=8.13.3"
+  source             = "github.com/sil-org/terraform-modules//aws/ecs/service-only?ref=8.13.3"
   cluster_id         = module.ecsasg.ecs_cluster_id
   service_name       = var.app_name
   service_env        = local.app_env
