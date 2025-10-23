@@ -230,16 +230,22 @@ module "adminer" {
  * Create new ecs service
  */
 module "ecs" {
-  source             = "github.com/sil-org/terraform-modules//aws/ecs/service-only?ref=8.13.3"
+  source  = "sil-org/ecs-service/aws"
+  version = "~> 0.3.0"
+
   cluster_id         = module.ecsasg.ecs_cluster_id
   service_name       = var.app_name
   service_env        = local.app_env
   container_def_json = var.container_def_json
   desired_count      = var.desired_count
-  tg_arn             = aws_alb_target_group.tg.arn
-  lb_container_name  = "hub"
-  lb_container_port  = "80"
   ecsServiceRole_arn = module.ecsasg.ecsServiceRole_arn
+  execution_role_arn = var.execution_role_arn
+
+  load_balancer = [{
+    container_name   = "hub"
+    container_port   = "80"
+    target_group_arn = aws_alb_target_group.tg.arn
+  }]
 }
 
 /*
