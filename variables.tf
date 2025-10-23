@@ -281,3 +281,12 @@ variable "enable_adminer" {
   default     = false
   type        = bool
 }
+
+variable "execution_role_arn" {
+  description = <<-EOF
+    The IAM role that allows ECS to make AWS API calls on your behalf, such as to pull container images from ECR when
+    using Fargate or to reference secrets from SSM Parameter Store.
+    EOF
+  type        = string
+  default     = null
+}
