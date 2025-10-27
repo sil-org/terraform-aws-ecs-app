@@ -83,10 +83,10 @@ resource "aws_iam_user_policy" "cd" {
         Action = [
           "iam:PassRole",
         ]
-        Resource = [
+        Resource = compact([
           module.ecsasg.ecsServiceRole_arn,
           var.execution_role_arn,
-        ]
+        ])
       },
     ]
   })
