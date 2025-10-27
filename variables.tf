@@ -288,5 +288,5 @@ variable "execution_role_arn" {
     using Fargate or to reference secrets from SSM Parameter Store.
     EOF
   type        = string
-  default     = null
+  default     = ""
 }
