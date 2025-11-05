@@ -14,7 +14,7 @@ locals {
 resource "aws_iam_user" "cd" {
   count = var.create_cd_user ? 1 : 0
 
-  name = "cd-${local.app_name_and_env}"
+  name = "cd-${local.app_name_and_env}-${local.region}"
 }
 
 resource "aws_iam_access_key" "cd" {
