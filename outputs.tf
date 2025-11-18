@@ -48,3 +48,7 @@ output "cd_user_secret_access_key_id" {
   value     = one(aws_iam_access_key.cd[*].secret)
   sensitive = true
 }
+
+output "vpc_id" {
+  value = module.vpc.id
+}
