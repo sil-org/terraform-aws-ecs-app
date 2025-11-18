@@ -184,6 +184,12 @@ variable "health_check" {
   }
 }
 
+variable "use_cloudflare_sg" {
+  description = "Use the Cloudflare security group to block all traffic except from Cloudflare."
+  type        = bool
+  default     = "true"
+}
+
 
 /*
  * Database configuration

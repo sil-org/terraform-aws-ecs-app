@@ -101,11 +101,38 @@ module "alb" {
   disable_public_ipv4 = var.disable_public_ipv4
   internal            = "false"
   vpc_id              = module.vpc.id
-  security_groups     = [module.vpc.vpc_default_sg_id, module.cloudflare-sg.id]
-  subnets             = module.vpc.public_subnet_ids
-  certificate_arn     = data.aws_acm_certificate.default.arn
-  tg_name             = "default-${var.app_name}-${var.app_env}"
+  security_groups = [
+    module.vpc.vpc_default_sg_id,
+    var.use_cloudflare_sg ? module.cloudflare-sg.id : aws_security_group.public_https.id
+  ]
+  subnets         = module.vpc.public_subnet_ids
+  certificate_arn = data.aws_acm_certificate.default.arn
+  tg_name         = "default-${var.app_name}-${var.app_env}"
 }
+
+
+/*
+ * Create security group to allow public access to HTTPS. Used when var.use_cloudflare_sg is false.
+ */
+resource "aws_security_group" "public_https" {
+  name        = "public-https"
+  description = "Allow HTTPS traffic from public"
+  vpc_id      = module.vpc.id
+  tags = {
+    Name = "public-https-${local.app_name_and_env}"
+  }
+}
+
+resource "aws_security_group_rule" "public_https" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.public_https.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+}
+
 
 /*
  * Create ECS Cluster and Auto-Scaling Group
