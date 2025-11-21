@@ -103,7 +103,7 @@ module "alb" {
   vpc_id              = module.vpc.id
   security_groups = [
     module.vpc.vpc_default_sg_id,
-    var.use_cloudflare_sg ? module.cloudflare-sg.id : aws_security_group.public_https.id
+    var.use_cloudflare_sg ? module.cloudflare-sg.id : one(aws_security_group.public_https[*].id)
   ]
   subnets         = module.vpc.public_subnet_ids
   certificate_arn = data.aws_acm_certificate.default.arn
@@ -115,6 +115,8 @@ module "alb" {
  * Create security group to allow public access to HTTPS. Used when var.use_cloudflare_sg is false.
  */
 resource "aws_security_group" "public_https" {
+  count = var.use_cloudflare_sg ? 0 : 1
+
   name        = "public-https"
   description = "Allow HTTPS traffic from public"
   vpc_id      = module.vpc.id
@@ -124,11 +126,13 @@ resource "aws_security_group" "public_https" {
 }
 
 resource "aws_security_group_rule" "public_https" {
+  count = var.use_cloudflare_sg ? 0 : 1
+
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  security_group_id = aws_security_group.public_https.id
+  security_group_id = one(aws_security_group.public_https[*].id)
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]
 }
