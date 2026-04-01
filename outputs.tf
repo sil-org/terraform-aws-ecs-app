@@ -36,6 +36,10 @@ output "ecsServiceRole_arn" {
   value = module.ecsasg.ecsServiceRole_arn
 }
 
+output "cd_role_arn" {
+  value = one(aws_iam_role.cd[*].arn)
+}
+
 output "cd_user_arn" {
   value = one(aws_iam_user.cd[*].arn)
 }
