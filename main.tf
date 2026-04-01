@@ -29,67 +29,98 @@ resource "aws_iam_user_policy" "cd" {
   name = "ecs_deployment"
   user = aws_iam_user.cd[0].name
 
-  policy = jsonencode({
+  policy = one(data.aws_iam_policy_document.cd[*].json)
+}
+
+resource "aws_iam_role" "cd" {
+  count = var.create_cd_role ? 1 : 0
+
+  name        = "cd-${local.app_name_and_env}-${local.region}"
+  description = "for GitHub Actions to deploy to ECS"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ecr:GetAuthorizationToken",
-          "ecs:DeregisterTaskDefinition",
-          "ecs:DescribeTaskDefinition",
-          "ecs:ListTaskDefinitions",
-          "ecs:RegisterTaskDefinition",
-        ],
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ecs:DescribeServices",
-          "ecs:UpdateService",
-        ]
-        Resource = "arn:aws:ecs:*:${local.account}:service/${module.ecsasg.ecs_cluster_name}/${module.ecs.service_name}"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ecs:DescribeTasks",
-          "ecs:StopTask",
-        ]
-        Resource = "arn:aws:ecs:*:${local.account}:task/${module.ecsasg.ecs_cluster_name}/*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ecs:ListTasks",
-        ]
-        "Condition" : {
-          "ArnEquals" : {
-            "ecs:cluster" : "arn:aws:ecs:*:${local.account}:cluster/${module.ecsasg.ecs_cluster_name}"
-          }
+    Statement = [{
+      Sid    = "GitHub"
+      Effect = "Allow"
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Principal = {
+        Federated = var.github_oidc_provider_arn
+      }
+      Condition = {
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" : "sts.amazonaws.com"
+        },
+        StringLike = {
+          "token.actions.githubusercontent.com:sub" : "repo:${var.github_repository}:*"
         }
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ecs:StartTask",
-        ]
-        Resource = "arn:aws:ecs:*:${local.account}:task-definition/${module.ecs.task_def_family}:*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "iam:PassRole",
-        ]
-        Resource = compact([
-          module.ecsasg.ecsServiceRole_arn,
-          var.execution_role_arn,
-        ])
-      },
-    ]
+      }
+    }]
   })
+}
+
+resource "aws_iam_role_policy" "cd" {
+  count = var.create_cd_role ? 1 : 0
+
+  name = "ecs_deployment"
+  role = aws_iam_role.cd[0].id
+
+  policy = one(data.aws_iam_policy_document.cd[*].json)
+}
+
+data "aws_iam_policy_document" "cd" {
+  count = var.create_cd_user == null && var.create_cd_role == null ? 0 : 1
+
+  statement {
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "ecs:DeregisterTaskDefinition",
+      "ecs:DescribeTaskDefinition",
+      "ecs:ListTaskDefinitions",
+      "ecs:RegisterTaskDefinition",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    actions = [
+      "ecs:DescribeServices",
+      "ecs:UpdateService",
+    ]
+    resources = ["arn:aws:ecs:*:${local.account}:service/${module.ecsasg.ecs_cluster_name}/${module.ecs.service_name}"]
+  }
+
+  statement {
+    actions = [
+      "ecs:DescribeTasks",
+      "ecs:StopTask",
+    ]
+    resources = ["arn:aws:ecs:*:${local.account}:task/${module.ecsasg.ecs_cluster_name}/*"]
+  }
+
+  statement {
+    actions = ["ecs:ListTasks"]
+    condition {
+      test     = "ArnEquals"
+      variable = "ecs:cluster"
+      values = [
+        "arn:aws:ecs:*:${local.account}:cluster/${module.ecsasg.ecs_cluster_name}",
+      ]
+    }
+    resources = ["*"]
+  }
+
+  statement {
+    actions   = ["ecs:StartTask"]
+    resources = ["arn:aws:ecs:*:${local.account}:task-definition/${module.ecs.task_def_family}:*"]
+  }
+
+  statement {
+    actions = ["iam:PassRole"]
+    resources = compact([
+      module.ecsasg.ecsServiceRole_arn,
+      var.execution_role_arn,
+    ])
+  }
 }
 
 /*
