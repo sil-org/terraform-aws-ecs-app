@@ -13,6 +13,10 @@ terraform {
       // While waiting for version 5 to mature, we'll constrain to earlier versions.
       version = ">= 2.0.0, < 4.39.0"
     }
+    external = {
+      source  = "hashicorp/external"
+      version = "~> 2.0"
+    }
     random = {
       version = "~> 3.0"
       source  = "hashicorp/random"

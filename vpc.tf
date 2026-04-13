@@ -15,9 +15,46 @@ module "vpc" {
 /*
  * Security group to limit traffic to Cloudflare IPs
  */
-module "cloudflare-sg" {
-  source = "github.com/sil-org/terraform-modules//aws/cloudflare-sg?ref=8.13.3"
-  vpc_id = module.vpc.id
+
+resource "aws_security_group" "cloudflare" {
+  name        = "cloudflare-https"
+  description = "Allow HTTPS traffic from Cloudflare"
+  vpc_id      = module.vpc.id
+  tags = {
+    Name = "${local.app_name_and_env}-cloudflare"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  timeouts {
+    delete = "2m"
+  }
+}
+
+resource "aws_security_group_rule" "cloudflare" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.cloudflare.id
+  cidr_blocks       = split(",", data.external.cloudflare_ips.result.ipv4_cidrs)
+  ipv6_cidr_blocks  = split(",", data.external.cloudflare_ips.result.ipv6_cidrs)
+}
+
+data "external" "cloudflare_ips" {
+  program = ["${path.module}/cloudflare-ips.sh"]
+}
+
+moved {
+  from = module.cloudflare-sg.aws_security_group.cloudflare_https
+  to   = aws_security_group.cloudflare
+}
+
+moved {
+  from = module.cloudflare-sg.aws_security_group_rule.cloudflare
+  to   = aws_security_group_rule.cloudflare
 }
 
 /*
@@ -103,7 +140,7 @@ module "alb" {
   vpc_id              = module.vpc.id
   security_groups = [
     module.vpc.vpc_default_sg_id,
-    var.use_cloudflare_sg ? module.cloudflare-sg.id : one(aws_security_group.public_https[*].id)
+    var.use_cloudflare_sg ? aws_security_group.cloudflare.id : one(aws_security_group.public_https[*].id)
   ]
   subnets         = module.vpc.public_subnet_ids
   certificate_arn = data.aws_acm_certificate.default.arn
