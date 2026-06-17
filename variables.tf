@@ -320,5 +320,11 @@ variable "execution_role_arn" {
     using Fargate or to reference secrets from SSM Parameter Store.
     EOF
   type        = string
-  default     = ""
+  default     = null
+}
+
+variable "task_role_arn" {
+  description = "ARN of IAM role that allows your Amazon ECS container task to make calls to other AWS services."
+  type        = string
+  default     = null
 }

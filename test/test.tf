@@ -32,6 +32,10 @@ module "full" {
   instance_type            = "t3.micro"
   create_adminer           = true
   enable_adminer           = true
+  log_retention_in_days    = 60
+  task_role_arn            = "arn:aws:iam::111111111111:role/task-role"
+  execution_role_arn       = "arn:aws:iam::111111111111:role/exec-role"
+
   health_check = {
     enabled             = true
     healthy_threshold   = 3
@@ -43,7 +47,7 @@ module "full" {
     timeout             = 10
     unhealthy_threshold = 3
   }
-  log_retention_in_days = 60
+
   asg_tags = {
     foo = "bar",
   }

@@ -278,6 +278,7 @@ module "ecs" {
   desired_count      = var.desired_count
   ecsServiceRole_arn = module.ecsasg.ecsServiceRole_arn
   execution_role_arn = var.execution_role_arn
+  task_role_arn      = var.task_role_arn
 
   load_balancer = [{
     container_name   = "hub"
