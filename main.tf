@@ -119,6 +119,7 @@ data "aws_iam_policy_document" "cd" {
     resources = compact([
       module.ecsasg.ecsServiceRole_arn,
       var.execution_role_arn,
+      var.task_role_arn
     ])
   }
 }
