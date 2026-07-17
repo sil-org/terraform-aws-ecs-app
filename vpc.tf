@@ -4,7 +4,7 @@
  */
 module "vpc" {
   source  = "sil-org/vpc/aws"
-  version = "~> 1.0"
+  version = "~> 1.1"
 
   app_name    = var.app_name
   app_env     = var.app_env
@@ -130,7 +130,7 @@ data "aws_acm_certificate" "default" {
  */
 module "alb" {
   source  = "sil-org/alb/aws"
-  version = "~> 1.1"
+  version = "~> 2.0"
 
   app_name            = var.app_name
   app_env             = var.app_env
@@ -181,7 +181,7 @@ resource "aws_security_group_rule" "public_https" {
  */
 module "ecsasg" {
   source  = "sil-org/ecs-asg/aws"
-  version = "~> 4.1"
+  version = "~> 5.1"
 
   cluster_name                   = local.app_name_and_env
   subnet_ids                     = module.vpc.private_subnet_ids
@@ -191,7 +191,6 @@ module "ecsasg" {
   scaling_metric_name            = "MemoryReservation"
   alarm_actions_enabled          = var.alarm_actions_enabled
   ssh_key_name                   = var.ssh_key_name
-  use_amazon_linux2023           = true
   instance_type                  = var.instance_type
   tags                           = var.asg_tags
   enable_ipv6                    = var.enable_ipv6
