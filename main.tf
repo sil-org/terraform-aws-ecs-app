@@ -5,7 +5,7 @@ locals {
   db_password = random_password.db_root.result
 
   account = data.aws_caller_identity.this.account_id
-  region  = data.aws_region.current.name
+  region  = data.aws_region.current.region
 }
 
 /*
@@ -137,10 +137,10 @@ resource "aws_cloudwatch_log_group" "logs" {
  */
 resource "aws_alb_target_group" "tg" {
   name                 = substr("tg-${local.app_name_and_env}", 0, 32)
-  port                 = "80"
+  port                 = 80
   protocol             = "HTTP"
   vpc_id               = module.vpc.id
-  deregistration_delay = "30"
+  deregistration_delay = 30
 
   stickiness {
     type = "lb_cookie"
@@ -167,7 +167,7 @@ resource "aws_alb_target_group" "tg" {
  */
 resource "aws_alb_listener_rule" "tg" {
   listener_arn = module.alb.https_listener_arn
-  priority     = "218"
+  priority     = 218
 
   action {
     type             = "forward"
@@ -192,7 +192,7 @@ module "ecs-service-cloudwatch-dashboard" {
   count = var.create_dashboard ? 1 : 0
 
   source  = "sil-org/ecs-service-cloudwatch-dashboard/aws"
-  version = "~> 3.1"
+  version = "~> 4.0"
 
   cluster_name   = module.ecsasg.ecs_cluster_name
   dashboard_name = "${local.app_name_and_env}-${local.region}"
@@ -218,7 +218,7 @@ resource "aws_db_instance" "this" {
   allow_major_version_upgrade = var.database_allow_major_version_upgrade
   engine                      = "mariadb"
   engine_version              = var.database_engine_version
-  allocated_storage           = "20" // 20 gibibyte
+  allocated_storage           = 20 // 20 gibibyte
   copy_tags_to_snapshot       = true
   ca_cert_identifier          = var.rds_ca_cert_identifier
   instance_class              = var.database_instance_class
@@ -229,7 +229,7 @@ resource "aws_db_instance" "this" {
   db_subnet_group_name        = module.vpc.db_subnet_group_name
   storage_type                = "gp2"
   storage_encrypted           = var.database_storage_encrypted
-  backup_retention_period     = "14"
+  backup_retention_period     = 14
   multi_az                    = var.database_multi_az
   publicly_accessible         = false
   vpc_security_group_ids      = [module.vpc.vpc_default_sg_id]
@@ -250,7 +250,7 @@ resource "aws_db_instance" "this" {
 module "adminer" {
   count   = var.create_adminer ? 1 : 0
   source  = "sil-org/adminer/aws"
-  version = "~> 1.1"
+  version = "~> 4.0"
 
   adminer_default_server = aws_db_instance.this.address
   app_name               = var.app_name
@@ -270,7 +270,7 @@ module "adminer" {
  */
 module "ecs" {
   source  = "sil-org/ecs-service/aws"
-  version = "~> 0.3.0"
+  version = "~> 1.0"
 
   cluster_id         = module.ecsasg.ecs_cluster_id
   service_name       = var.app_name
@@ -291,19 +291,26 @@ module "ecs" {
 /*
  * Create Cloudflare DNS record
  */
-resource "cloudflare_record" "dns" {
+resource "cloudflare_dns_record" "dns" {
   count = var.create_dns_record ? 1 : 0
 
-  zone_id         = data.cloudflare_zone.this.id
-  name            = var.subdomain
-  value           = module.alb.dns_name
-  type            = "CNAME"
-  proxied         = true
-  allow_overwrite = var.dns_allow_overwrite
+  zone_id = data.cloudflare_zone.this.id
+  name    = var.subdomain
+  content = module.alb.dns_name
+  type    = "CNAME"
+  proxied = true
+  ttl     = 1
+}
+
+moved {
+  from = cloudflare_record.dns
+  to   = cloudflare_dns_record.dns
 }
 
 data "cloudflare_zone" "this" {
-  name = var.domain_name
+  filter = {
+    name = var.domain_name
+  }
 }
 
 
