@@ -215,6 +215,12 @@ variable "use_cloudflare_sg" {
  * Database configuration
  */
 
+variable "adminer_require_totp" {
+  description = "Set to true to require TOTP for Adminer login. Requires create_adminer = true."
+  type        = bool
+  default     = false
+}
+
 variable "create_adminer" {
   description = "Set to true to create an Adminer database manager app instance"
   default     = false

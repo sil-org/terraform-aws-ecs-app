@@ -263,6 +263,7 @@ module "adminer" {
   ecsServiceRole_arn     = module.ecsasg.ecsServiceRole_arn
   alb_dns_name           = module.alb.dns_name
   enable                 = var.enable_adminer
+  require_totp           = var.adminer_require_totp
 }
 
 /*
