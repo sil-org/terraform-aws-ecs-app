@@ -28,6 +28,11 @@ output "adminer_url" {
   value = one(module.adminer[*].adminer_url)
 }
 
+output "adminer_totp_secret" {
+  value     = one(module.adminer[*].totp_secret)
+  sensitive = true
+}
+
 output "ecsInstanceRole_arn" {
   value = module.ecsasg.ecsInstanceRole_arn
 }
