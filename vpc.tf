@@ -6,10 +6,14 @@ module "vpc" {
   source  = "sil-org/vpc/aws"
   version = "~> 1.1"
 
-  app_name    = var.app_name
-  app_env     = var.app_env
-  aws_zones   = var.aws_zones
-  enable_ipv6 = var.enable_ipv6
+  app_name                                        = var.app_name
+  app_env                                         = var.app_env
+  aws_zones                                       = var.aws_zones
+  enable_ipv6                                     = var.enable_ipv6
+  use_transit_gateway                             = var.use_transit_gateway
+  transit_gateway_id                              = var.transit_gateway_id
+  transit_gateway_default_route_table_association = var.transit_gateway_default_route_table_association
+  transit_gateway_default_route_table_propagation = var.transit_gateway_default_route_table_propagation
 }
 
 /*
