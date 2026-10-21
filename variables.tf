@@ -173,6 +173,30 @@ variable "aws_zones" {
   type        = list(string)
 }
 
+variable "private_subnet_cidr_blocks" {
+  description = <<-EOT
+    The CIDR blocks for the VPC's private subnets (one per AZ, in order). There must be at least as many private CIDRs
+    as zones in var.aws_zones, and they must not overlap the public CIDRs.
+  EOT
+  type        = list(string)
+  default     = ["10.0.11.0/24", "10.0.22.0/24", "10.0.33.0/24", "10.0.44.0/24"]
+}
+
+variable "public_subnet_cidr_blocks" {
+  description = <<-EOT
+    The CIDR blocks for the VPC's public subnets (one per AZ, in order). There must be at least as many public CIDRs
+    as zones in var.aws_zones, and they must not overlap the private CIDRs.
+  EOT
+  type        = list(string)
+  default     = ["10.0.10.0/24", "10.0.20.0/24", "10.0.30.0/24", "10.0.40.0/24"]
+}
+
+variable "vpc_cidr_block" {
+  description = "The block of IP addresses (as a CIDR) the VPC should use"
+  type        = string
+  default     = "10.0.0.0/16"
+}
+
 variable "use_transit_gateway" {
   description = "Set to true to attach a transit gateway to this VPC and route traffic to it. Use in conjunction with transit_gateway_id and create_nat_gateway=false."
   type        = bool
