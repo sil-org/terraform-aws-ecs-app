@@ -226,6 +226,22 @@ variable "transit_gateway_default_route_table_propagation" {
  * ALB configuration
  */
 
+
+variable "alb_log_retention_days" {
+  description = "ALB log retention in days. Set to 0 for infinite retention. Omit to disable logging."
+  type        = number
+  default     = null
+}
+
+variable "alb_ssl_policy" {
+  description = <<-EOT
+    SSL policy for the ALB. See https://docs.aws.amazon.com/elasticloadbalancing/latest/application/describe-ssl-policies.html
+    for valid values.
+  EOT
+  type        = string
+  default     = "ELBSecurityPolicy-TLS13-1-2-Res-PQ-2025-09"
+}
+
 variable "default_cert_domain_name" {
   description = "Default/primary certificate domain name. Used to reference an existing certificate for use in the ALB"
   type        = string
