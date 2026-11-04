@@ -138,21 +138,24 @@ data "aws_acm_certificate" "default" {
  */
 module "alb" {
   source  = "sil-org/alb/aws"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
-  app_name            = var.app_name
-  app_env             = var.app_env
-  enable_ipv6         = var.enable_ipv6
-  disable_public_ipv4 = var.disable_public_ipv4
-  internal            = "false"
-  vpc_id              = module.vpc.id
+  app_name                     = var.app_name
+  app_env                      = var.app_env
+  enable_ipv6                  = var.enable_ipv6
+  disable_public_ipv4          = var.disable_public_ipv4
+  internal                     = "false"
+  vpc_id                       = module.vpc.id
+  subnets                      = module.vpc.public_subnet_ids
+  certificate_arn              = data.aws_acm_certificate.default.arn
+  tg_name                      = "default-${var.app_name}-${var.app_env}"
+  access_log_retention_in_days = var.alb_log_retention_days
+  ssl_policy                   = var.alb_ssl_policy
+
   security_groups = [
     module.vpc.vpc_default_sg_id,
     var.use_cloudflare_sg ? aws_security_group.cloudflare.id : one(aws_security_group.public_https[*].id)
   ]
-  subnets         = module.vpc.public_subnet_ids
-  certificate_arn = data.aws_acm_certificate.default.arn
-  tg_name         = "default-${var.app_name}-${var.app_env}"
 }
 
 

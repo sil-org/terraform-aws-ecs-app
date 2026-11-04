@@ -42,6 +42,8 @@ module "full" {
   transit_gateway_id                              = "tgw-0123456789abcdef0"
   transit_gateway_default_route_table_association = true
   transit_gateway_default_route_table_propagation = true
+  alb_log_retention_days                          = 60
+  alb_ssl_policy                                  = "ELBSecurityPolicy-TLS13-1-2-2021-06"
 
   health_check = {
     enabled             = true
